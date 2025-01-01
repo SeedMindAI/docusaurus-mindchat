@@ -15,9 +15,9 @@ services:
   demo:
     build:
       context: .
-  docusaurus-llm:
+  docusaurus-ai-api:
     build:
-      context: ./docusaurus-llm
+      context: ./docusaurus-ai-api
     environment:
       - SITEMAP_URL=https://docusaurus-ai.localhost/sitemap.xml
       - AVOID_SSL_VERIFY=True

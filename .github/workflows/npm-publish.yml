@@ -3,7 +3,7 @@ name: Publish to npm on Tag
 on:
   push:
     tags:
-      - 'v*' # Matches tags that start with 'v', e.g., v1.0.0
+      - 'n*' # Matches tags that start with 'v', e.g., v1.0.0
 
 jobs:
   release:
@@ -19,15 +19,19 @@ jobs:
           registry-url: 'https://registry.npmjs.org/'
 
       - name: Install Dependencies
+        working-directory: packages/docusaurus-ai
         run: yarn install
 
       - name: Build
+        working-directory: packages/docusaurus-ai
         run: yarn build # If you have a build process
       
       - name: Set npm registry
+        working-directory: packages/docusaurus-ai
         run: yarn config set registry https://registry.npmjs.org/
 
       - name: Publish to NPM
+        working-directory: packages/docusaurus-ai
         run: yarn publish packages/docusaurus-ai
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
