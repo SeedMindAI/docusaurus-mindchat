@@ -35,7 +35,7 @@ export default function DocusaurusAIPlugin(
 
                 function handleButtonClick() {
                   if(question=='' || question==null){
-                    
+                    return;
                   }
                   loading = true;
                   render();
