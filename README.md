@@ -2,7 +2,7 @@
 This is a simple AI assistance for Docusaurus generated documentation. It is a simple chatbot that can answer questions about your docs.
 
 ## Screenshots
-![Screenshot](./assets/demo.png)
+![Screenshot](./assets/screenshots/demo.png)
 
 
 ## Architecture
