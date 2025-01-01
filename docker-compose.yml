@@ -1,0 +1,37 @@
+services:
+  caddy:
+    image: caddy:2.9-alpine
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    ports:
+      - "0.0.0.0:80:80"
+      - "0.0.0.0:443:443"
+    networks:
+      default:
+        aliases:
+          - docusaurus-ai.localhost
+  demo:
+    build:
+      context: .
+  docusaurus-llm:
+    build:
+      context: ./docusaurus-llm
+    environment:
+      - SITEMAP_URL=https://docusaurus-ai.localhost/sitemap.xml
+      - AVOID_SSL_VERIFY=True
+      - LANGCHAIN_SERVER=http://ollama:11434
+    depends_on:
+      - demo
+      - ollama
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - 11434:11434
+    volumes:
+      - ollama_data:/root/.ollama
+volumes:
+  caddy_data:
+  caddy_config:
+  ollama_data:

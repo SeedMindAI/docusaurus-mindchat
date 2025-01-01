@@ -1,0 +1,11 @@
+docusaurus-ai.localhost {
+    reverse_proxy /api/* http://docusaurus-llm:8000
+    reverse_proxy /* http://demo:80
+
+    log {
+        output stdout
+    }
+    encode gzip
+
+    header / Strict-Transport-Security "max-age=63072000"
+}
