@@ -1,6 +1,10 @@
 # Docusaurus AI assisstance
 This is a simple AI assistance for Docusaurus generated documentation. It is a simple chatbot that can answer questions about your docs.
 
+## Screenshots
+![Screenshot](./assets/demo.png)
+
+
 ## Architecture
 ![Architecture](./assets/architecture.png)
 
@@ -15,6 +19,6 @@ yarn install
 
 ## Run on Docker
 1. Run `docker-compose up -d ollama` and wait to be ready.
-2. Run `docker-compose exec ollama -it bash -c "ollama pull llama3.2:1b"` and wait to be ready.
+2. Run `docker-compose exec ollama bash -c "ollama pull llama3.2:1b"` and wait to be ready.
 3. Run `docker-compose up -d --build`
 4. Open your browser and navigate to `https://docusaurus-ai.localhost` and test the AI assistant.

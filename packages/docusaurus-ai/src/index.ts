@@ -16,157 +16,248 @@ export default function DocusaurusAIPlugin(
     injectHtmlTags() {
         return {
             postBodyTags: [
-              `<script>
-                // Define global variables for state management
-                let showPopup = false;
-                let loading = false;
-                let question = "";
-                let answer = "";
-
-                // Helper functions
-                function togglePopup() {
-                  showPopup = !showPopup;
-                  render();
+              `
+              <style> 
+                .chat-button {
+                  position: fixed;
+                  bottom: 20px;
+                  right: 20px;
+                  width: 60px;
+                  height: 60px;
+                  border-radius: 50%;
+                  background: var(--ifm-color-primary);
+                  border: none;
+                  cursor: pointer;
+                  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                  font-size: 24px;
+                  transition: transform 0.3s ease;
+                  z-index: 1000;
                 }
 
-                function handleInputChange(event) {
-                  question = event.target.value;
+                .chat-button:hover {
+                  transform: scale(1.1);
+                }
+                
+                .chat-container {
+                  position: fixed;
+                  bottom: 100px;
+                  right: 20px;
+                  width: 350px;
+                  height: 500px;
+                  background: #ffffff;
+                  border-radius: 12px;
+                  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+                  display: flex;
+                  flex-direction: column;
+                  z-index: 1000;
                 }
 
-                function handleButtonClick() {
-                  if(question=='' || question==null){
-                    return;
+                .chat-header {
+                  padding: 15px;
+                  background: var(--ifm-color-primary);
+                  border-radius: 12px 12px 0 0;
+                  color: white;
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                }
+
+                .chat-header h3 {
+                  margin: 0;
+                  font-size: 16px;
+                }
+
+                .close-button {
+                  background: none;
+                  border: none;
+                  color: white;
+                  font-size: 24px;
+                  cursor: pointer;
+                  padding: 0;
+                }
+
+                .messages-container {
+                  flex: 1;
+                  padding: 20px;
+                  overflow-y: auto;
+                  background: #f5f5f5;
+                }
+
+                .message {
+                  margin: 8px 0;
+                  padding: 10px 15px;
+                  border-radius: 15px;
+                  max-width: 80%;
+                  word-wrap: break-word;
+                }
+
+                .user-message {
+                  background: var(--ifm-color-primary-lightest);
+                  color: white;
+                  margin-left: auto;
+                }
+
+                .bot-message {
+                  background: white;
+                  color: #213547;
+                  margin-right: auto;
+                }
+
+                .loading {
+                  background: #e0e0e0;
+                }
+
+                .input-area {
+                  padding: 15px;
+                  border-top: 1px solid #eee;
+                  display: flex;
+                  gap: 10px;
+                }
+
+                .chat-input {
+                  flex: 1;
+                  padding: 8px 12px;
+                  border: 1px solid #ddd;
+                  border-radius: 20px;
+                  outline: none;
+                  font-size: 14px;
+                }
+
+                .send-button {
+                  padding: 8px 15px;
+                  background: var(--ifm-color-primary);
+                  color: white;
+                  border: none;
+                  border-radius: 20px;
+                  cursor: pointer;
+                }
+
+                .send-button:hover {
+                  background: var(--ifm-color-primary);
+                }
+
+                .disclaimer {
+                  font-size: .75rem;
+                  text-align: center;
+                  color: gray;
+                }
+
+                @media (prefers-color-scheme: light) {
+                  .chat-button {
+                    background: var(--ifm-color-primary);
+                    color: white;
                   }
-                  loading = true;
-                  render();
-
-                  fetch("${chatUrl}?q="+encodeURIComponent(question))
-                    .then((response) => response.json())
-                    .then((data) => {
-                      answer = data.result;
-                      render();
-                    })
-                    .finally(() => {
-                      loading = false;
-                      render();
-                    });
+                  
+                  .chat-container {
+                    background: white;
+                  }
+                }
+              </style>
+              `,
+              `              
+              <script>
+                function createChatButton() {
+                  const button = document.createElement('button');
+                  button.className = 'chat-button';
+                  button.innerHTML = '✨';
+                  return button;
                 }
 
-                function render() {
-                  // Clear existing content
-                  const root = document.getElementById("assistant-root");
-                  root.innerHTML = "";
+                function createChatContainer() {
+                  const container = document.createElement('div');
+                  container.className = 'chat-container';
+                  container.style.display = 'none';
 
-                  // Create the main container
-                  const container = document.createElement("div");
-                  container.style.position = "fixed";
-                  container.style.bottom = "20px";
-                  container.style.right = "20px";
+                  container.innerHTML = '<div class="chat-header"><h3>AI Assistant</h3><button class="close-button">×</button></div><div class="messages-container"></div><div class="input-area"><input type="text" placeholder="Type your message..." class="chat-input"><button class="send-button">Send</button></div><span class="disclaimer">AI assistant can make mistakes. Check important info</span>';
 
-                  // Create the toggle button
-                  const toggleButton = document.createElement("button");
-                  toggleButton.onclick = togglePopup;
-                  Object.assign(toggleButton.style, {
-                    backgroundColor: "var(--ifm-color-primary)",
-                    border: "none",
-                    borderRadius: "50%",
-                    width: "60px",
-                    height: "60px",
-                    color: "white",
-                    fontSize: "24px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-                  });
-                  toggleButton.innerHTML = '<span role="img" aria-label="assistant">🪄</span>';
-                  container.appendChild(toggleButton);
+                  return container;
+                }
 
-                  // Create the popup
-                  if (showPopup) {
-                    const popup = document.createElement("div");
-                    Object.assign(popup.style, {
-                      position: "absolute",
-                      bottom: "80px",
-                      right: "0",
-                      width: "300px",
-                      maxHeight: "400px",
-                      overflowY: "auto",
-                      backgroundColor: "white",
-                      border: "1px solid #ccc",
-                      borderRadius: "8px",
-                      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-                      padding: "10px",
+                function createMessage(text, sender) {
+                  const messageDiv = document.createElement('div');
+                  messageDiv.className = "message "+sender+"-message";
+                  messageDiv.textContent = text;
+                  return messageDiv;
+                }
+
+                function createLoadingMessage() {
+                  const loadingMessage = document.createElement('div');
+                  loadingMessage.className = 'message bot-message loading';
+                  loadingMessage.textContent = '...';
+                  return loadingMessage;
+                }
+                class ChatBot {
+                  constructor() {
+                    this.messages = [];
+                    this.isOpen = false;
+                    this.init();
+                  }
+
+                  init() {
+                    this.button = createChatButton();
+                    this.container = createChatContainer();
+                    
+                    document.body.appendChild(this.button);
+                    document.body.appendChild(this.container);
+                    
+                    this.messagesContainer = this.container.querySelector('.messages-container');
+                    this.attachEventListeners();
+                  }
+
+                  attachEventListeners() {
+                    this.button.addEventListener('click', () => this.toggleChat());
+                    this.container.querySelector('.close-button').addEventListener('click', () => this.toggleChat());
+
+                    const input = this.container.querySelector('.chat-input');
+                    const sendButton = this.container.querySelector('.send-button');
+
+                    const sendMessage = () => {
+                      const message = input.value.trim();
+                      if (message) {
+                        this.addMessage(message, 'user');
+                        this.handleBotResponse(message);
+                        input.value = '';
+                      }
+                    };
+
+                    sendButton.addEventListener('click', sendMessage);
+                    input.addEventListener('keypress', (e) => {
+                      if (e.key === 'Enter') {
+                        sendMessage();
+                      }
                     });
+                  }
 
-                    // Create the answer textarea
-                    if (answer) {
-                      const answerArea = document.createElement("textarea");
-                      answerArea.value = answer;
-                      answerArea.readOnly = true;
-                      Object.assign(answerArea.style, {
-                        width: "100%",
-                        padding: "10px",
-                        marginTop: "10px",
-                        borderRadius: "4px",
-                        border: "1px solid #ccc",
-                        height: "150px",
-                      });
-                      popup.appendChild(answerArea);
+                  toggleChat() {
+                    this.isOpen = !this.isOpen;
+                    this.container.style.display = this.isOpen ? 'flex' : 'none';
+                    if (this.isOpen) {
+                      this.container.querySelector('.chat-input').focus();
                     }
-
-                    // Create a container for input and button
-                    const inputContainer = document.createElement("div");
-                    inputContainer.style.display = "flex";
-                    inputContainer.style.alignItems = "center";
-                    inputContainer.style.gap = "10px";
-
-                    // Create the question input
-                    const questionInput = document.createElement("input");
-                    questionInput.type = "text";
-                    questionInput.value = question;
-                    questionInput.placeholder = "Enter your question";
-                    questionInput.oninput = handleInputChange;
-                    Object.assign(questionInput.style, {
-                      flexGrow: "1",
-                      padding: "10px",
-                      borderRadius: "4px",
-                      border: "1px solid #ccc",
-                    });
-                    inputContainer.appendChild(questionInput);
-
-                    // Create the submit button
-                    const submitButton = document.createElement("button");
-                    submitButton.onclick = handleButtonClick;
-                    submitButton.textContent = loading ? "Thinking..." : "Submit";
-                    submitButton.disabled = loading;
-                    Object.assign(submitButton.style, {
-                      padding: "10px",
-                      backgroundColor: loading ? "#cccccc" : "#007bff",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "4px",
-                      cursor: loading ? "not-allowed" : "pointer",
-                    });
-                    inputContainer.appendChild(submitButton);
-
-                    popup.appendChild(inputContainer);
-                    container.appendChild(popup);
                   }
 
-                  root.appendChild(container);
-                }
+                  addMessage(text, sender) {
+                    const messageElement = createMessage(text, sender);
+                    this.messagesContainer.appendChild(messageElement);
+                    this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
+                  }
 
-                // Initialize the app
-                function initAssistant() {
-                  const root = document.createElement("div");
-                  root.id = "assistant-root";
-                  document.body.appendChild(root);
-                  render();
-                }
+                  handleBotResponse(message) {
+                    const loadingMessage = createLoadingMessage();
+                    this.messagesContainer.appendChild(loadingMessage);
 
-                // Start the assistant
-                initAssistant();
+                    fetch('${chatUrl}?q=' + message)
+                      .then((response) => response.json())
+                      .then((data) => {
+                          this.addMessage(data.result, 'bot');
+                      }).catch((error)=>{
+                        this.addMessage('Sorry, I am not available right now. Please try again later.', 'bot');
+                      }).finally(() => {
+                        loadingMessage.remove();
+                      });
+                  }
+                }
+                new ChatBot();
               </script>`
             ]
         };
