@@ -2,7 +2,7 @@ FROM node:21 AS builder
 
 RUN mkdir -p /app
 WORKDIR /app
-COPY package.json package-lock.json ./
+COPY package.json ./
 COPY yarn.lock ./
 COPY tsconfig.json ./
 COPY tsconfig.base.json ./
