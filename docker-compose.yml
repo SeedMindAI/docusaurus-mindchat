@@ -15,9 +15,13 @@ services:
   demo:
     build:
       context: .
-  docusaurus-ai-api:
+  sitemap-rag:
+    container_name: sitemap-rag
     build:
-      context: ./docusaurus-ai-api
+      context: ../sitemap-rag
+    volumes:
+      - ./chat.py:/app/chat.py
+      - ./requirements.extra.txt:/app/requirements.extra.txt
     environment:
       - SITEMAP_URL=https://docusaurus-ai.localhost/sitemap.xml
       - AVOID_SSL_VERIFY=True

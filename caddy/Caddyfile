@@ -1,5 +1,5 @@
 docusaurus-ai.localhost {
-    reverse_proxy /api/* http://docusaurus-ai-api:8000
+    reverse_proxy /api/* http://sitemap-rag:8000
     reverse_proxy /* http://demo:80
 
     log {
