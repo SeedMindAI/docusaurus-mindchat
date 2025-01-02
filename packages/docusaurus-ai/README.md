@@ -9,7 +9,7 @@ This is a simple AI assistance for Docusaurus generated documentation. It is a s
 ![Architecture](./assets/architecture.png)
 
 ## Usage
-Add @ahelmy/docusaurus-ai to `docusarus.config.js` plugins array.
+Add @ahelmy/docusaurus-ai to `docusarus.config.ts` plugins array.
 
 ```js
 themes: [
