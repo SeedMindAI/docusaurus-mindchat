@@ -22,6 +22,8 @@ services:
     volumes:
       - ./chat.py:/app/chat.py
       - ./requirements.extra.txt:/app/requirements.extra.txt
+    env_file:
+      - .env
     environment:
       - SITEMAP_URL=https://docusaurus-ai.localhost/sitemap.xml
       - AVOID_SSL_VERIFY=True
