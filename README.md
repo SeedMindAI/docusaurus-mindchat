@@ -2,6 +2,10 @@
 
 This project provides an AI-powered chat assistant for Docusaurus-generated documentation. It integrates an intelligent chatbot that can answer questions about your documentation, enhancing user experience and making information retrieval more efficient.
 
+## Credits
+
+This project is a fork of [docusaurus-ai](https://github.com/ahelmy/docusaurus-ai) by [Ahmed Helmy](https://github.com/ahelmy). All credit for the original implementation goes to the original author and contributors.
+
 ## Screenshots
 ![Screenshot](./assets/screenshots/demo.png)
 
