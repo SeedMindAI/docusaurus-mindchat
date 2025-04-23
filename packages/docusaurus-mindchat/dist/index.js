@@ -1,22 +1,14 @@
-export interface PluginOptions {
-    chatUrl?: string;
-}
-
-import { DocusaurusContext, ThemeConfig } from "@docusaurus/types";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const PLUGIN_NAME = "@seedmindai/docusaurus-mindchat";
-
-
-export default function DocusaurusAIPlugin(
-  context: DocusaurusContext,
-  options?: PluginOptions,
-): any {
-  const chatUrl = options?.chatUrl || "/api/predict";
-  return {
-    name: PLUGIN_NAME,
-    injectHtmlTags() {
-        return {
-            postBodyTags: [
-              `
+function DocusaurusAIPlugin(context, options) {
+    const chatUrl = (options === null || options === void 0 ? void 0 : options.chatUrl) || "/api/predict";
+    return {
+        name: PLUGIN_NAME,
+        injectHtmlTags() {
+            return {
+                postBodyTags: [
+                    `
               <style> 
                 .chat-button {
                   position: fixed;
@@ -154,7 +146,7 @@ export default function DocusaurusAIPlugin(
                 }
               </style>
               `,
-              `              
+                    `              
               <script>
                 function createChatButton() {
                   const button = document.createElement('button');
@@ -259,14 +251,15 @@ export default function DocusaurusAIPlugin(
                 }
                 new ChatBot();
               </script>`
-            ]
-        };
-    },
-    async postBuild() {
-      // Hook to process docs after build.
-    },
-    async loadContent() {
-        // Hook to process docs during build.
-    },
-  };
+                ]
+            };
+        },
+        async postBuild() {
+            // Hook to process docs after build.
+        },
+        async loadContent() {
+            // Hook to process docs during build.
+        },
+    };
 }
+exports.default = DocusaurusAIPlugin;

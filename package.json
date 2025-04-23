@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "root",
+  "name": "docusaurus-mindchat-monorepo",
   "workspaces": {
     "packages": [
       "packages/*",
